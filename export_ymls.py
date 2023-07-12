@@ -1,33 +1,45 @@
 import subprocess as sub
 import re
 import os
-import glob
-#import yaml
-#modified from https://github.com/conda/conda/issues/5165
 
-# def fix_prefix_in_yaml_files(directory):
-#     # List all files in the directory
-#     files = os.listdir(directory)
-#
-#     for file_name in files:
-#         if file_name.endswith('.yml') or file_name.endswith('.yaml'):
-#             file_path = os.path.join(directory, file_name)
-#
-#             with open(file_path, 'r') as file:
-#                 # Load the YAML content
-#                 data = yaml.safe_load(file)
-#                 # Fix the prefix value
-#                 if 'prefix' in data:
-#                     data['prefix'] = data['prefix'].strip()
-#                 # Save the updated YAML content
-#                 with open(file_path, 'w') as file:
-#                     yaml.dump(data, file)
+def find_last_true(bool_list):
+    for i in range(len(bool_list) - 1, -1, -1):
+        if bool_list[i] == True:
+            return i
+    return -1  # Return -1 if no `True` value is found
 
+def fix_envs_txt():
+    lines = []
+    with open('envs.txt', 'r') as file:
+        lines = file.readlines()
+    
+    regex_pattern = r"([a-zA-Z]:\\[^<>:\"/\\|?*\n]+(\\[^<>:\"/\\|?*\n]+)*\\?|^\\\\[^<>:\"/\\|?*\n]+(\\[^<>:\"/\\|?*\n]+)*\\?)"
+    
+    #find if the line contains a file path format.
+    path_in_line = []
+    for l in lines:
+        matches = re.findall(regex_pattern, l)
+        path_in_line.append(bool(matches))
+
+    #crop bool list so the last item is true, while keeping all trues
+    last_true_idx = find_last_true(path_in_line)
+
+    #make lines the same length as path_in_line
+    lines = lines[:(last_true_idx+1)]
+
+    #write new lines to file, also removing old ones
+    with open('envs.txt', 'w') as file:
+        pass  # Open the file and immediately close it to clear its contents
+    with open('envs.txt', 'a') as file:
+        file.writelines(lines)
 
 def export_ymls():
 
     # create list of current environments
     sub.check_call(" ".join(['conda','env','list','>','envs.txt']),shell=True)
+
+    #fix some problems in env txt
+    fix_envs_txt()
 
     # load and parse environment names
     envs = {}

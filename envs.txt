@@ -1,10 +1,8 @@
 # conda environments:
 #
 base                     C:\Users\jc463253\AppData\Local\anaconda3
-py_env                *  C:\Users\jc463253\AppData\Local\anaconda3\envs\py_env
+py_env                   C:\Users\jc463253\AppData\Local\anaconda3\envs\py_env
 pytorch_2_01             C:\Users\jc463253\AppData\Local\anaconda3\envs\pytorch_2_01
 pytorch_2_01_cpu         C:\Users\jc463253\AppData\Local\anaconda3\envs\pytorch_2_01_cpu
 tf_2_13                  C:\Users\jc463253\AppData\Local\anaconda3\envs\tf_2_13
 tf_2_13_cpu              C:\Users\jc463253\AppData\Local\anaconda3\envs\tf_2_13_cpu
-
-[0m[0m
