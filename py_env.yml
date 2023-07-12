@@ -1,0 +1,23 @@
+name: py_env
+channels:
+  - defaults
+dependencies:
+  - bzip2=1.0.8
+  - ca-certificates=2023.05.30
+  - libffi=3.4.4
+  - openssl=3.0.9
+  - pip=23.1.2
+  - python=3.11.4
+  - pyyaml=6.0
+  - setuptools=67.8.0
+  - sqlite=3.41.2
+  - tk=8.6.12
+  - tzdata=2023c
+  - vc=14.2
+  - vs2015_runtime=14.27.29016
+  - wheel=0.38.4
+  - xz=5.4.2
+  - yaml=0.2.5
+  - zlib=1.2.13
+prefix: C:\Users\jc463253\AppData\Local\anaconda3\envs\py_env
+[0m[0m
