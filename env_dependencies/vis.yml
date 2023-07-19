@@ -1,0 +1,5 @@
+name: vis
+channels:
+  - defaults
+  - conda-forge
+prefix: C:\Users\jc463253\AppData\Local\miniconda3\envs\vis

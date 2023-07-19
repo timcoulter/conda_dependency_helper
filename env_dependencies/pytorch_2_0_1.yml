@@ -1,0 +1,5 @@
+name: pytorch_2_0_1
+channels:
+  - defaults
+  - conda-forge
+prefix: C:\Users\jc463253\AppData\Local\miniconda3\envs\pytorch_2_0_1
