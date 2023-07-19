@@ -1,7 +1,7 @@
 import os
 import subprocess
 import re
-from export_ymls import export_env_dependencies
+from export_conda_dependencies import export_env_dependencies
 from configure_conda import configure_conda_envs
 
 def create_or_update_environment(env_name, yml_file, pip_file=None):
