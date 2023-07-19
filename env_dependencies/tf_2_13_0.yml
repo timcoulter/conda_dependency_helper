@@ -5,6 +5,7 @@ channels:
 dependencies:
   - bzip2=1.0.8
   - ca-certificates=2023.05.30
+  - certifi=2023.5.7
   - libffi=3.4.4
   - openssl=3.0.9
   - pip=23.1.2
@@ -22,7 +23,6 @@ dependencies:
       - absl-py==1.4.0
       - astunparse==1.6.3
       - cachetools==5.3.1
-      - certifi==2023.5.7
       - charset-normalizer==3.2.0
       - flatbuffers==23.5.26
       - gast==0.4.0
@@ -58,4 +58,4 @@ dependencies:
       - urllib3==1.26.16
       - werkzeug==2.3.6
       - wrapt==1.15.0
-prefix: C:\Users\jc463253\AppData\Local\miniconda3\envs\tf_2_13_0
+prefix: C:\Users\Tim\miniconda3\envs\tf_2_13_0

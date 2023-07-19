@@ -18,4 +18,4 @@ dependencies:
   - wheel=0.38.4
   - xz=5.4.2
   - zlib=1.2.13
-prefix: C:\Users\jc463253\AppData\Local\miniconda3\envs\py_env
+prefix: C:\Users\Tim\miniconda3\envs\py_env

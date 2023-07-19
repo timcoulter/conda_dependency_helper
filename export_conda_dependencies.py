@@ -58,14 +58,11 @@ def export_env_dependencies():
         output_folder = os.path.join(current_directory, folder_name)
 
         if "_not_in_default_path" in env_name:
-            pip_cmd = f"pip freeze > {env_name}.txt"
             conda_cmd = f"conda env export --no-build --p {directory} > {env_name}.yml"
         else:
-            pip_cmd = f"conda run --name {env_name} pip freeze > {env_name}.txt"
             conda_cmd = f"conda env export --no-build --name {env_name} > {env_name}.yml"
 
         os.chdir(output_folder)
-        #sub.check_call(pip_cmd, shell=True)
         sub.check_call(conda_cmd, shell=True)
 
     remove_ansi_escape_sequences_recursive(output_folder)

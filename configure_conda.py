@@ -5,11 +5,12 @@ def configure_conda_envs():
     subprocess.call("conda activate base", shell=True)
 
     #configuring conda package channel
-    subprocess.call("conda config --set channel_priority flexible")
-    subprocess.call("conda config --remove-key channels")
-    subprocess.call("conda config --add channels conda-forge")
-    subprocess.call("conda config --add channels defaults")
-    subprocess.call("conda config --set pip_interop_enabled False")
+    subprocess.call("conda config --set channel_priority flexible", shell=True)
+    subprocess.call("conda config --remove-key channels", shell=True)
+    subprocess.call("conda config --add channels conda-forge", shell=True)
+    subprocess.call("conda config --add channels defaults", shell=True)
+    subprocess.call("conda config --set pip_interop_enabled False", shell=True)
+    subprocess.call("conda config --set report_errors false",shell=True)
 
     # Update conda
     print("Updating base conda")
@@ -22,13 +23,13 @@ def configure_conda_envs():
 
 
     # install pip and pip-sync to all conda environments on the system
-    print("Installing pip and pip-sync to all conda environments on the system")
-    subprocess.check_call("conda install --all pip pip-tools  --yes", shell=True)
+    print("Installing pip to all conda environments on the system")
+    subprocess.check_call("conda install --all pip --yes", shell=True)
 
 
     conda_doctor()
     #clean conda 
-    subprocess.call("conda clean --all --yes")
+    subprocess.call("conda clean --all --yes", shell=True)
 
 def conda_doctor():
     # Get a list of all Conda environments
