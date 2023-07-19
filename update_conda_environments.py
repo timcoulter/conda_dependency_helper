@@ -1,40 +1,49 @@
 import os
 import subprocess
-from export_ymls import export_ymls
+import re
+from export_ymls import export_env_dependencies
+from configure_conda import configure_conda_envs
 
-def create_or_update_environment(env_name, yml_file):
-
+def create_or_update_environment(env_name, yml_file, pip_file=None):
+    # Check if the environment already exists
     env_exists = subprocess.call(f"conda activate {env_name}", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) == 0
 
     if env_exists:
-        print(f"Updating environment '{env_name}' using {yml_file}...")
-        subprocess.call(f"conda env update --name {env_name} --file \"{yml_file}\"", shell=True)
+        # Update the existing environment
+        print(f"Updating existing environment: {env_name}")
+        subprocess.check_call(f"conda env update --name {env_name} --file \"{yml_file}\" --prune", shell=True)
+
     else:
-        print(f"Creating environment '{env_name}' using {yml_file}...")
-        subprocess.call(f"conda env create --name {env_name} --file \"{yml_file}\"", shell=True)
+        # Create a new environment
+        print(f"Creating new environment: {env_name}")
+        subprocess.check_call(f"conda env create --name {env_name} --file \"{yml_file}\"", shell=True)
+        subprocess.check_call(f"conda install --name {env_name} pip --yes")
+        subprocess.check_call(f"conda install --name {env_name} -c conda-forge pip-tools --yes")
+
+    if pip_file:
+        # Install pip packages from the provided text file
+        print(f"Installing pip packages for environment: {env_name}")
+        #subprocess.check_call(f"conda run --name {env_name} pip install --upgrade --requirement \"{pip_file}\"",
+        #                      shell=True)
+        subprocess.check_call(f"conda run --name {env_name} pip-sync \"{pip_file}\"",shell=True)
+
 
 if __name__ == '__main__':
-    # Folder path containing the .yml files
-    yml_folder = os.getcwd()
+    configure_conda_envs()
 
-    # Activate the base Conda environment
-    subprocess.call("conda activate base", shell=True)
+    env_dependency_folder = os.path.join(os.getcwd(),'env_dependencies')
+    if not os.path.exists(env_dependency_folder):
+        print("No conda environment dependencies found at: {0}".format(env_dependency_folder))
+    else:
+        # Iterate over the .yml files in the folder
+        for file in os.listdir(env_dependency_folder):
+            if file.endswith(".yml"):
+                env_name = os.path.splitext(file)[0]
+                yml_file = os.path.join(env_dependency_folder, file)
+                pip_file = os.path.join(env_dependency_folder, f"{env_name}.txt")
+                if os.path.isfile(pip_file):
+                    create_or_update_environment(env_name, yml_file, pip_file)
+                else:
+                    create_or_update_environment(env_name, yml_file)
 
-    # Update conda
-    print("Updating base conda")
-    subprocess.call("conda update -n base conda --yes", shell=True)
-    #print install pip
-    subprocess.call("conda install pip --yes", shell=True)
-    # Ensure better solver is installed and configured
-    print("Installing better conda environment solver")
-    subprocess.call("conda install -n base conda-libmamba-solver --yes", shell=True)
-    subprocess.call("conda config --set solver libmamba", shell=True)
-
-    # Iterate over the .yml files in the folder
-    for file in os.listdir(yml_folder):
-        if file.endswith(".yml"):
-            env_name = os.path.splitext(file)[0]
-            yml_file = os.path.join(yml_folder, file)
-            create_or_update_environment(env_name, yml_file)
-
-    export_ymls()
+    export_env_dependencies()
