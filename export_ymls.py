@@ -1,83 +1,74 @@
 import subprocess as sub
 import re
 import os
+from configure_conda import configure_conda_envs
 
-def find_last_true(bool_list):
-    for i in range(len(bool_list) - 1, -1, -1):
-        if bool_list[i] == True:
-            return i
-    return -1  # Return -1 if no `True` value is found
+def remove_ansi_escape_sequences(file_path):
+    with open(file_path, 'r') as file:
+        content = file.read()
 
-def fix_envs_txt():
-    lines = []
-    with open('envs.txt', 'r') as file:
-        lines = file.readlines()
-    
-    regex_pattern = r"([a-zA-Z]:\\[^<>:\"/\\|?*\n]+(\\[^<>:\"/\\|?*\n]+)*\\?|^\\\\[^<>:\"/\\|?*\n]+(\\[^<>:\"/\\|?*\n]+)*\\?)"
-    
-    #find if the line contains a file path format.
-    path_in_line = []
-    for l in lines:
-        matches = re.findall(regex_pattern, l)
-        path_in_line.append(bool(matches))
+    content = content.replace('[0m[0m', '')
+    content = content.replace('[0m', '')
 
-    #crop bool list so the last item is true, while keeping all trues
-    last_true_idx = find_last_true(path_in_line)
+    with open(file_path, 'w') as file:
+        file.write(content)
 
-    #make lines the same length as path_in_line
-    lines = lines[:(last_true_idx+1)]
+def remove_ansi_escape_sequences_recursive(directory):
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if file.endswith(('.txt', '.yml')):
+                file_path = os.path.join(root, file)
+                remove_ansi_escape_sequences(file_path)
 
-    #write new lines to file, also removing old ones
-    with open('envs.txt', 'w') as file:
-        pass  # Open the file and immediately close it to clear its contents
-    with open('envs.txt', 'a') as file:
-        file.writelines(lines)
+def export_env_dependencies():
+    configure_conda_envs()
 
-def export_ymls():
+    # Get output of "conda env list" command
+    env_list_output = sub.Popen(['conda', 'env', 'list'], stdout=sub.PIPE, stderr=sub.PIPE, text=True).communicate()[0]
 
-    # create list of current environments
-    sub.check_call(" ".join(['conda','env','list','>','envs.txt']),shell=True)
+    # Fix some problems in env txt
+    env_list_output = env_list_output.replace('[0m[0m', '')
+    env_list_output = env_list_output.replace('[0m', '')
 
-    #fix some problems in env txt
-    fix_envs_txt()
-
-    # load and parse environment names
+    # Load and parse environment names
     envs = {}
-    with open("envs.txt", 'r') as f:
-        lines = f.read().splitlines()
-        lines = [l.replace("*", "") for l in lines]  # get rid of asterisk which denotes active environment
-        for line in lines[2:]:
-            line_match = re.findall(r'(\w*)\s+(C:.*)', line)
-            if line_match:
-                name, directory = line_match[0]
-                if not name:
-                    local_name = directory.split("\\")[-1]
-                    print(f"Environment {local_name} is not installed in the default conda environment directory.")
-                    print(f"The environment name will be appended with '_not_in_default_path'")
-                    envs[f"{local_name}_not_in_default_path"] = directory
-                else:
-                    envs[name] = directory
+    lines = env_list_output.splitlines()
+    lines = [l.replace("*", "") for l in lines[2:]]  # Get rid of asterisk which denotes active environment
+    for line in lines:
+        line_match = re.findall(r'(\w*)\s+(C:.*)', line)
+        if line_match:
+            name, directory = line_match[0]
+            if not name:
+                local_name = directory.split("\\")[-1]
+                print(f"Environment {local_name} is not installed in the default conda environment directory.")
+                print(f"The environment name will be appended with '_not_in_default_path'")
+                envs[f"{local_name}_not_in_default_path"] = directory
+            else:
+                envs[name] = directory
 
-    # write environment packages out
+    # Create env_dependencies folder if it doesn't exist
+    folder_name = "env_dependencies"
+    if not os.path.exists(folder_name):
+        os.makedirs(folder_name)
 
-    #change to your preferred directory location
-    directory = os.getcwd()
-
-    os.chdir(directory)
+    # Write environment packages out
+    current_directory = os.getcwd()
     for env_name, directory in envs.items():
-        print("Backing up...",env_name)
-
+        print("Backing up...", env_name)
+        output_folder = os.path.join(current_directory, folder_name)
 
         if "_not_in_default_path" in env_name:
-            cmd = f"conda env export --no-build --p {directory} > {env_name}.yml"
+            pip_cmd = f"pip freeze > {env_name}.txt"
+            conda_cmd = f"conda env export --no-build --p {directory} > {env_name}.yml"
         else:
-            cmd = f"conda env export --no-build --name {env_name} > {env_name}.yml"
+            pip_cmd = f"conda run --name {env_name} pip freeze > {env_name}.txt"
+            conda_cmd = f"conda env export --no-build --name {env_name} > {env_name}.yml"
 
+        os.chdir(output_folder)
+        #sub.check_call(pip_cmd, shell=True)
+        sub.check_call(conda_cmd, shell=True)
 
-        sub.check_call(cmd,shell=True)
-
-    # directory = 'C:/Users/' + os.getlogin() + '/OneDrive - James Cook University/Postgraduate/conda_yml'
-    # fix_prefix_in_yaml_files(directory)
+    remove_ansi_escape_sequences_recursive(output_folder)
 
 if __name__ == '__main__':
-    export_ymls()
+    export_env_dependencies()
