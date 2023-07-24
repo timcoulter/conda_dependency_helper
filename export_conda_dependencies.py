@@ -21,7 +21,6 @@ def remove_ansi_escape_sequences_recursive(directory):
                 remove_ansi_escape_sequences(file_path)
 
 def export_env_dependencies():
-    configure_conda_envs()
 
     # Get output of "conda env list" command
     env_list_output = sub.Popen(['conda', 'env', 'list'], stdout=sub.PIPE, stderr=sub.PIPE, text=True).communicate()[0]
