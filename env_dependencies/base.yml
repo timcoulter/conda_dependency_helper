@@ -70,4 +70,7 @@ dependencies:
   - zlib=1.2.13
   - zstandard=0.19.0
   - zstd=1.5.5
+  - pip:
+      - beautifulsoup4==4.12.2
+      - soupsieve==2.4.1
 prefix: C:\Users\jc463253\AppData\Local\miniconda3

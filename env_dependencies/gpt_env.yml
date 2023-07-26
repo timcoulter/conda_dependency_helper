@@ -5,10 +5,10 @@ channels:
 dependencies:
   - bzip2=1.0.8
   - ca-certificates=2023.05.30
-  - certifi=2023.5.7
+  - certifi=2023.7.22
   - libffi=3.4.4
   - openssl=3.0.9
-  - pip=23.1.2
+  - pip=23.2.1
   - python=3.11.4
   - setuptools=67.8.0
   - sqlite=3.41.2
