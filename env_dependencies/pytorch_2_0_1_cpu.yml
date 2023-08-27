@@ -38,7 +38,7 @@ dependencies:
   - networkx=2.8.4
   - numpy=1.25.0
   - numpy-base=1.25.0
-  - openssl=3.0.9
+  - openssl=3.0.10
   - pillow=9.4.0
   - pip=23.2.1
   - pycparser=2.21
@@ -65,4 +65,4 @@ dependencies:
   - xz=5.4.2
   - zlib=1.2.13
   - zstd=1.5.5
-prefix: C:\Users\jc463253\AppData\Local\miniconda3\envs\pytorch_2_0_1_cpu
+prefix: C:\Users\Tim\miniconda3\envs\pytorch_2_0_1_cpu

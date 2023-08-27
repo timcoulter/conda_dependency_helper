@@ -6,7 +6,7 @@ dependencies:
   - bzip2=1.0.8
   - ca-certificates=2023.05.30
   - libffi=3.4.4
-  - openssl=3.0.9
+  - openssl=3.0.10
   - pip=23.2.1
   - python=3.11.4
   - setuptools=67.8.0
@@ -18,4 +18,4 @@ dependencies:
   - wheel=0.38.4
   - xz=5.4.2
   - zlib=1.2.13
-prefix: C:\Users\jc463253\AppData\Local\miniconda3\envs\pytorch_2_0_1
+prefix: C:\Users\Tim\miniconda3\envs\pytorch_2_0_1
